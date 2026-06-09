@@ -33,6 +33,13 @@ $ cmake .. && make
 ### [0. Introduction](0_Introduction/README.md)
 Getting started samples .If you are new to MACA, these are the best SDK samples to begin with. 
 
+List buildable sample directories as text or JSON:
+
+```shell
+python3 scripts/list_samples.py
+python3 scripts/list_samples.py --json
+```
+
 
 ## Contributors Guide
 
