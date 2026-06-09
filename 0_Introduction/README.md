@@ -1,5 +1,8 @@
 # 0. Introduction
 
+### [deviceInfo]
+This sample queries MACA Runtime device information and prints a compact summary for every visible GPU. It is useful as a first smoke test before running heavier samples.
+
 ### [asyncExec]
 This sample demonstrates iterative vector addition using MACA async operations. Asynchronous memory operations with mcMallocAsync/mcFreeAsync, all asynchronous tasks are synchronized via mcStreamSynchronize at completion.
 
