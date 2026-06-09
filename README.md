@@ -28,6 +28,12 @@ $ mkdir build && cd build
 $ cmake .. && make  
 ```
 
+Validate that every buildable sample has a local README:
+
+```shell
+python3 scripts/check_sample_docs.py
+```
+
 ## Samples list
 
 ### [0. Introduction](0_Introduction/README.md)
