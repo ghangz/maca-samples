@@ -36,5 +36,15 @@ $ make run
 $ make clean
 ```
 
+The binary accepts an optional positive vector length, which is useful when
+running the sample on containers with different memory limits:
+
+```
+$ ./vectorAdd 1000000
+```
+
+When no value is provided, the sample keeps the original default of 50000
+elements.
+
 ## References (for more details)
 

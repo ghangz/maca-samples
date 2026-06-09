@@ -34,6 +34,8 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <errno.h>
+#include <limits.h>
 // For the MACA runtime routines
 #include <mc_runtime.h>
 #include <mc_common.h>
@@ -56,12 +58,28 @@ __global__ void vectorAdd(const float *A, const float *B, float *C,
 /**
  * Host main routine
  */
-int main(void) {
+static int parseNumElements(int argc, char **argv, int defaultValue) {
+  if (argc <= 1) {
+    return defaultValue;
+  }
+
+  errno = 0;
+  char *end = NULL;
+  long value = strtol(argv[1], &end, 10);
+  if (errno != 0 || end == argv[1] || *end != '\0' || value <= 0 ||
+      value > INT_MAX) {
+    fprintf(stderr, "Usage: %s [positive_num_elements]\n", argv[0]);
+    exit(EXIT_FAILURE);
+  }
+  return (int)value;
+}
+
+int main(int argc, char **argv) {
   // Error code to check return values for MACA calls
   mcError_t err = mcSuccess;
 
   // Print the vector length to be used, and compute its size
-  int numElements = 50000;
+  int numElements = parseNumElements(argc, argv, 50000);
   size_t size = numElements * sizeof(float);
   printf("[Vector addition of %d elements]\n", numElements);
 
