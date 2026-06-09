@@ -16,6 +16,16 @@ Without using git the easiest way to use these samples is to download the zip fi
 
 ### Building MACA Samples for Linux
 
+Before building samples, you can validate that the MACA toolkit is visible:
+
+```
+$ ./scripts/check_maca_env.sh
+```
+
+The script checks `MACA_PATH`, the `mxcc` compiler, and the runtime headers and
+library directory used by the sample Makefiles. It is useful for container
+smoke tests and for collecting reproducible environment logs.
+
 The Linux samples are built using makefiles or CMakeLists. To use the makefiles, change the current directory to the sample directory you wish to build, and run make:
 ```
 $ cd <sample_dir>
