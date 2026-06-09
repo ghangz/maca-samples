@@ -21,6 +21,15 @@ The Linux samples are built using makefiles or CMakeLists. To use the makefiles,
 $ cd <sample_dir>
 $ make
 ```
+
+To run a small introduction smoke suite and save build/runtime logs:
+
+```
+$ ./scripts/run_intro_smoke.sh
+```
+
+Set `LOG_DIR=/path/to/logs` to choose where stdout and stderr files are stored.
+
 To use the CMakeLists, change the current directory to the sample directory you wish to build, and run:
 ```
 $ cd <sample_dir>
