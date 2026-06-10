@@ -5,29 +5,62 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
 
-
-FENCE_RE = re.compile(r"```(?:bash|sh|shell)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+SKIP_DIRS = {"build", "out", "venv", ".venv", "__pycache__"}
 
 
 def extract_commands(readme: Path) -> list[str]:
     commands: list[str] = []
     text = readme.read_text(encoding="utf-8", errors="replace")
-    for block in FENCE_RE.findall(text):
+    blocks: list[str] = []
+    current_block: list[str] = []
+    in_shell_block = False
+    active = False
+    for raw_line in text.splitlines():
+        stripped_line = raw_line.strip()
+        if stripped_line.startswith("```"):
+            marker = stripped_line[3:].strip().lower()
+            if active:
+                if in_shell_block:
+                    blocks.append("\n".join(current_block))
+                current_block = []
+                active = False
+                in_shell_block = False
+            else:
+                active = True
+                in_shell_block = marker in {"", "bash", "sh", "shell"}
+            continue
+        if active and in_shell_block:
+            current_block.append(raw_line)
+
+    for block in blocks:
+        current: list[str] = []
         for line in block.splitlines():
             stripped = line.strip()
             if stripped.startswith("$ "):
                 stripped = stripped[2:].strip()
             if stripped and not stripped.startswith("#"):
-                commands.append(stripped)
+                if stripped.endswith("\\"):
+                    current.append(stripped[:-1].rstrip())
+                    continue
+                if current:
+                    current.append(stripped)
+                    commands.append(" ".join(part for part in current if part))
+                    current = []
+                else:
+                    commands.append(stripped)
+        if current:
+            commands.append(" ".join(part for part in current if part))
     return commands
 
 
 def lint(root: Path) -> list[dict[str, object]]:
     results: list[dict[str, object]] = []
     for makefile in sorted(root.rglob("Makefile")):
+        parts = makefile.relative_to(root).parts[:-1]
+        if any(part.startswith(".") or part in SKIP_DIRS for part in parts):
+            continue
         directory = makefile.parent
         readme = directory / "README.md"
         if not readme.exists():
