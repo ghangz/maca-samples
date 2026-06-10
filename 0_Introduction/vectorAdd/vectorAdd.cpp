@@ -36,6 +36,7 @@
 #include <math.h>
 #include <errno.h>
 #include <limits.h>
+#include <stdlib.h>
 // For the MACA runtime routines
 #include <mc_runtime.h>
 #include <mc_common.h>
@@ -67,7 +68,7 @@ static int parseNumElements(int argc, char **argv, int defaultValue) {
   char *end = NULL;
   long value = strtol(argv[1], &end, 10);
   if (errno != 0 || end == argv[1] || *end != '\0' || value <= 0 ||
-      value > INT_MAX) {
+      value > (INT_MAX - 1024)) {
     fprintf(stderr, "Usage: %s [positive_num_elements]\n", argv[0]);
     exit(EXIT_FAILURE);
   }
