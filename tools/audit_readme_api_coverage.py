@@ -16,12 +16,26 @@ def audit(root: Path) -> dict[str, object]:
     results = []
     for makefile in sorted(root.rglob("Makefile")):
         directory = makefile.parent
-        source_text = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in directory.glob("*.cpp"))
+        source_files = [
+            path
+            for pattern in ("*.cpp", "*.cu", "*.h", "*.hpp")
+            for path in sorted(directory.glob(pattern))
+        ]
+        source_text = "\n".join(
+            path.read_text(encoding="utf-8", errors="replace") for path in source_files
+        )
         readme = directory / "README.md"
         readme_text = readme.read_text(encoding="utf-8", errors="replace") if readme.exists() else ""
         used = sorted(set(API_RE.findall(source_text)))
-        missing = [api for api in used if api not in readme_text]
-        results.append({"path": directory.relative_to(root).as_posix(), "used_apis": used, "missing_from_readme": missing})
+        documented = set(API_RE.findall(readme_text))
+        missing = [api for api in used if api not in documented]
+        results.append(
+            {
+                "path": directory.relative_to(root).as_posix(),
+                "used_apis": used,
+                "missing_from_readme": missing,
+            }
+        )
     return {"sample_count": len(results), "samples_with_missing_apis": sum(1 for item in results if item["missing_from_readme"]), "results": results}
 
 
