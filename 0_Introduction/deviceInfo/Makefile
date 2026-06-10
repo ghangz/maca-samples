@@ -8,6 +8,8 @@ MACA_PATH ?= /opt/maca
 MXCC      := $(MACA_PATH)/mxgpu_llvm/bin/mxcc
 MXCCFLAGS := -x maca
 
+.PHONY: all run clean
+
 all: deviceInfo
 
 deviceInfo: deviceInfo.cpp
