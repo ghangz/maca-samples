@@ -9,11 +9,12 @@ import re
 from pathlib import Path
 
 
-TARGET_RE = re.compile(r"^([A-Za-z0-9_.-]+):", re.MULTILINE)
+TARGET_RE = re.compile(r"^([A-Za-z0-9_.-]+)\s*:(?!=)", re.MULTILINE)
 REQUIRED = ("all", "run", "clean")
 
 
 def audit(root: Path) -> dict[str, object]:
+    root = root.resolve()
     results = []
     for makefile in sorted(root.rglob("Makefile")):
         targets = sorted(set(TARGET_RE.findall(makefile.read_text(encoding="utf-8", errors="replace"))))
@@ -32,6 +33,7 @@ def main() -> int:
     report = audit(args.root)
     text = json.dumps(report, indent=2, ensure_ascii=False)
     if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(text + "\n", encoding="utf-8")
     else:
         print(text)
