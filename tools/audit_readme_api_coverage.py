@@ -47,6 +47,7 @@ def main() -> int:
 
     text = json.dumps(audit(args.root), indent=2, ensure_ascii=False)
     if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(text + "\n", encoding="utf-8")
     else:
         print(text)
