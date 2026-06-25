@@ -98,6 +98,12 @@ Click the Sync fork button to synchronize the latest upstream Fork repository.
 
 Answers to frequently asked questions about MACA can be found at [MXMACA Programming Forum](https://developer.metax-tech.com/forum/c/bian-cheng/14/).
 
+## Validation Utilities
+
+`tools/sample_list.py` exports a structured inventory of sample directories,
+their top-level categories, and whether each sample is driven by `make`,
+`cmake`, or another build layout.
+
 ## License
 
 License. See [LICENSE](LICENSE)
