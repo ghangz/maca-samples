@@ -98,6 +98,12 @@ Click the Sync fork button to synchronize the latest upstream Fork repository.
 
 Answers to frequently asked questions about MACA can be found at [MXMACA Programming Forum](https://developer.metax-tech.com/forum/c/bian-cheng/14/).
 
+## Validation Utilities
+
+The repository now includes `tools/maca_env_doctor.py`, which checks common
+sample prerequisites such as `MACA_HOME`, required build tools, and whether
+`maca-smi -L` can see devices before you start compiling or running samples.
+
 ## License
 
 License. See [LICENSE](LICENSE)
