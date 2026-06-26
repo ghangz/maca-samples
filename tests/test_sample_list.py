@@ -13,7 +13,12 @@ class SampleListTests(unittest.TestCase):
 
     def test_collect_samples_finds_sample_dirs(self):
         with tempfile.TemporaryDirectory() as directory:
-            sample_dir = os.path.join(directory, "0_Introduction", "vectorAdd")
+            category_dir = os.path.join(directory, "0_Introduction")
+            os.makedirs(category_dir)
+            with open(os.path.join(category_dir, "README.md"), "w", encoding="utf-8") as handle:
+                handle.write("# category\n")
+
+            sample_dir = os.path.join(category_dir, "vectorAdd")
             os.makedirs(sample_dir)
             with open(os.path.join(sample_dir, "Makefile"), "w", encoding="utf-8") as handle:
                 handle.write("all:\n")

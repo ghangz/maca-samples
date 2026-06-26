@@ -14,9 +14,12 @@ def collect_samples(root):
         rel_path = os.path.relpath(current_root, root)
         if rel_path == ".":
             continue
+        parts = rel_path.split(os.sep)
+        if len(parts) < 2:
+            continue
         samples.append({
             "path": rel_path.replace("\\", "/"),
-            "category": rel_path.split(os.sep)[0],
+            "category": parts[0],
             "has_readme": "README.md" in files,
             "build_system": detect_build_system(files),
         })
