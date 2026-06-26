@@ -21,6 +21,7 @@ def run_command(command, timeout):
             command,
             capture_output=True,
             text=True,
+            errors="replace",
             timeout=timeout,
             check=False,
         )
@@ -40,9 +41,11 @@ def inspect_maca_home(path):
         return CheckResult("MACA_HOME", False, "path does not exist: %s" % path)
 
     missing = []
-    for child in ("bin", "include", "lib"):
+    for child in ("bin", "include"):
         if not os.path.exists(os.path.join(path, child)):
             missing.append(child)
+    if not os.path.exists(os.path.join(path, "lib")) and not os.path.exists(os.path.join(path, "lib64")):
+        missing.append("lib/lib64")
 
     if missing:
         return CheckResult("MACA_HOME", False, "missing subdirectories: %s" % ", ".join(missing))
@@ -65,7 +68,18 @@ def build_report(timeout):
     for binary in ("make", "cmake", "python3", "maca-smi"):
         report["checks"].append(asdict(inspect_binary(binary)))
 
-    ok, detail = run_command(["maca-smi", "-L"], timeout)
+    maca_smi_path = shutil.which("maca-smi")
+    if maca_smi_path is None:
+        maca_home = os.environ.get("MACA_HOME")
+        if maca_home:
+            fallback = os.path.join(maca_home, "bin", "maca-smi")
+            if os.path.exists(fallback):
+                maca_smi_path = fallback
+
+    if maca_smi_path is not None:
+        ok, detail = run_command([maca_smi_path, "-L"], timeout)
+    else:
+        ok, detail = False, "maca-smi command not found"
     report["checks"].append(asdict(CheckResult("maca-smi -L", ok, detail)))
     return report
 

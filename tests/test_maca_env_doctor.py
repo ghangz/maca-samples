@@ -16,11 +16,18 @@ class MacaEnvDoctorTests(unittest.TestCase):
             os.makedirs(os.path.join(directory, "include"))
             result = inspect_maca_home(directory)
             self.assertFalse(result.ok)
-            self.assertIn("lib", result.detail)
+            self.assertIn("lib/lib64", result.detail)
 
     def test_inspect_maca_home_passes_when_layout_complete(self):
         with tempfile.TemporaryDirectory() as directory:
             for child in ("bin", "include", "lib"):
+                os.makedirs(os.path.join(directory, child))
+            result = inspect_maca_home(directory)
+            self.assertTrue(result.ok)
+
+    def test_inspect_maca_home_accepts_lib64_layout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for child in ("bin", "include", "lib64"):
                 os.makedirs(os.path.join(directory, child))
             result = inspect_maca_home(directory)
             self.assertTrue(result.ok)
